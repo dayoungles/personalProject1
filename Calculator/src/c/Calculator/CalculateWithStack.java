@@ -11,7 +11,7 @@ public class CalculateWithStack {
 		// TODO Auto-generated method stub
 		CalculateWithStack sample = new CalculateWithStack();
 		// sample.calculate('*');
-		String expression = "7 ^ 2 - 4 * 7 / 2 ^ 2 * 2";
+		String expression = "8 ^ 2 - 4 * 7 / 2 / 2 / 2 / 7 - 5";
 		Scanner scan = new Scanner(expression);
 		// String calculus;
 		// while (true) {
@@ -31,22 +31,25 @@ public class CalculateWithStack {
 	private static void split2Stack(CalculateWithStack sample, Scanner scan) {
 		// System.out.println("Input calculus(?;)");
 		// String calculus = scan.nextLine();
-
+		
 		while (scan.hasNext()) {
+			char operator = ' ';
+			//int priorityNum = 0;
 			if (scan.hasNextFloat()) {
 				float pushFloat = scan.nextFloat();
 				// System.out.println(pushFloat);
 				fStack.push(pushFloat);
 			} else {
-				char operator = scan.next().charAt(0);
+				operator = scan.next().charAt(0);
 				int priorityNum = sample.convertPriority(operator);// 우선순위 반환
 				// System.out.println(priorityNum); //우선순위로 변환 확인했음
 				stopoverCalculate(sample, priorityNum);// 우선순위 작은 연산자 들어오면 일단
 														// 계산해서 넣어줌
 			}
 			
-			System.out.println(fStack);
-			System.out.println(operatorStack);
+//			System.out.println(fStack);
+//			System.out.println(operatorStack);
+//			System.out.println(operator);
 		}
 	}
 
@@ -55,27 +58,40 @@ public class CalculateWithStack {
 			float answer = sample.calculate(operatorStack.pop(), fStack.pop(),
 					fStack.pop());
 			fStack.push(answer);
-			System.out.println(fStack);
-			System.out.println(operatorStack);
+			//System.out.println(fStack);
+			//System.out.println(operatorStack);
 		}
 	}
-
-	private static void stopoverCalculate(CalculateWithStack sample, int priorityNum) { // 우선순위 비교해서 계산까지.종료조건!!!!이건 비교만 하지, 쌓여있을 때는 어떻게 할지?
-		if (operatorStack.isEmpty()) {
-			operatorStack.push(priorityNum);
-		} else {
-			while(true/*isEmpty*/){//스택 픽이랑 비교해서 크거나 같을 때까지만 돈다.
-				if (priorityNum >= operatorStack.peek()) { //우선순위가 높으면 일단 operatorStack에 쌓는다. 
-					operatorStack.push(priorityNum);
-					
-				} else {
-					float middleProcess = sample.calculate(operatorStack.pop(), fStack.pop(), fStack.pop());
-					fStack.push(middleProcess);
-					operatorStack.push(priorityNum);
-				}
+	
+	private static void stopoverCalculate(CalculateWithStack sample, int priorityNum){
+		while (!operatorStack.isEmpty()){
+			if (operatorStack.peek() < priorityNum)
+				break;
+			else {
+				float middleProcess = sample.calculate(operatorStack.pop(), fStack.pop(), fStack.pop());
+				fStack.push(middleProcess);
 			}
 		}
+		operatorStack.push(priorityNum);
 	}
+	
+//	private static void stopoverCalculate(CalculateWithStack sample, int priorityNum) { // 우선순위 비교해서 계산까지.종료조건!!!!이건 비교만 하지, 쌓여있을 때는 어떻게 할지?
+//		if (operatorStack.isEmpty()) {
+//			operatorStack.push(priorityNum);
+//		} else {
+//			while(true/*isEmpty*/){//스택 픽이랑 비교해서 크거나 같을 때까지만 돈다.
+//				if (priorityNum >= operatorStack.peek()) { //우선순위가 높으면 일단 operatorStack에 쌓는다. 
+//					operatorStack.push(priorityNum);
+//					
+//				} else {
+//					float middleProcess = sample.calculate(operatorStack.pop(), fStack.pop(), fStack.pop());
+//					fStack.push(middleProcess); 
+//					operatorStack.push(priorityNum);
+//				}
+//			}
+//		}
+//	}
+	
 
 	public int convertPriority(char operator) {
 		int a = 0;
